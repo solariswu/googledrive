@@ -8,5 +8,7 @@
     <string name="playerfragment_demo">Like this demo?</string>
     <string name="playerfragment_text">Play Youtube</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
+    <string name="select_file">Select a file</string>
+    <string name="select_folder">Select a folder</string>
 
 </resources>
