@@ -1,10 +1,6 @@
 <resources>
     <string name="app_name">G drive Demo</string>
     <string name="str_today">12 Hours</string>
-    <string name="str_thisweek">This Week</string>
-    <string name="str_defaultTemp">32°C</string>
-    <string name="str_unknowgeo">NA, NA</string>
-    <string name="str_currentweather">Current Weather</string>
     <string name="playerfragment_demo">Like this demo?</string>
     <string name="playerfragment_text">Play Youtube</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
