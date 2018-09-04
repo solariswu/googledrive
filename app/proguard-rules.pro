@@ -21,6 +21,8 @@
 -keep class com.google.** { *; }
 -keep class com.solariswu.gdrive.models.** { *; }
 
+-keep public class *extends java.lang.annotation.Annotation { *; }
+
 -keep class sun.misc.** { *; }
 
 ##---------------End: proguard configuration for Gson  ----------

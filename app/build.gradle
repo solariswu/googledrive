@@ -1,9 +1,10 @@
 apply plugin: 'com.android.application'
-apply plugin: 'android-apt'
+//apply plugin: 'com.android.library'
+//apply plugin: 'com.jakewharton.butterknife'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "24.0.2"
+    compileSdkVersion 27
+    buildToolsVersion '28.0.1'
 
     lintOptions {
         abortOnError false
@@ -11,7 +12,7 @@ android {
     defaultConfig {
         applicationId "com.solariswu.gdrive"
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 27
         versionCode 1
         versionName "1.1"
         multiDexEnabled true
@@ -22,41 +23,44 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    final AUTO_VALUE_VERSION = '1.3'
-    final AUTO_VALUE_GSON_VERSION = '0.4.2'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation files('libs/YouTubeAndroidPlayerApi.jar')
+    testImplementation 'junit:junit:4.12'
 
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('libs/YouTubeAndroidPlayerApi.jar')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'io.reactivex:rxjava:1.2.0'
-    compile 'io.reactivex:rxandroid:1.2.0'
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
-    compile 'com.squareup.okhttp3:okhttp:3.4.1'
-    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.4.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'io.reactivex:rxjava:1.3.0'
+    implementation 'io.reactivex:rxandroid:1.2.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.8.0'
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.8.0'
 
-    // https://github.com/google/auto/issues/268
-    provided "com.jakewharton.auto.value:auto-value-annotations:$AUTO_VALUE_VERSION"
-    provided "com.ryanharter.auto.value:auto-value-gson:$AUTO_VALUE_GSON_VERSION"
-    annotationProcessor "com.google.auto.value:auto-value:$AUTO_VALUE_VERSION"
+    compileOnly 'com.jakewharton.auto.value:auto-value-annotations:1.5'
+    compileOnly 'com.ryanharter.auto.value:auto-value-gson:0.8.0'
+    annotationProcessor 'com.google.auto.value:auto-value:1.5.2'
     annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.4-rc2'
-    annotationProcessor "com.ryanharter.auto.value:auto-value-gson:$AUTO_VALUE_GSON_VERSION"
-    annotationProcessor 'com.squareup:javapoet:1.7.0'
-
-    compile ('com.google.api-client:google-api-client:1.22.0') {
+    annotationProcessor 'com.ryanharter.auto.value:auto-value-gson:0.8.0'
+    implementation 'com.ryanharter.auto.value:auto-value-gson-annotations:0.8.0'
+    implementation 'com.google.code.gson:gson:2.8.1'
+    annotationProcessor 'com.squareup:javapoet:1.9.0'
+    implementation('com.google.api-client:google-api-client:1.22.0') {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
-    compile 'com.android.support:design:25.2.0'
-    compile 'com.google.android.gms:play-services-auth:11.6.0'
-    compile 'com.google.android.gms:play-services-drive:11.6.0'
-    //compile 'com.google.android.gms:play-services-appindexing:9.8.0'
-    compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
 
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.google.android.gms:play-services-auth:16.0.0'
+    implementation 'com.google.android.gms:play-services-drive:15.0.1'
+
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }

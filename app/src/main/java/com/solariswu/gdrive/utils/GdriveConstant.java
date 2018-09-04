@@ -15,9 +15,11 @@ public class GdriveConstant {
     public static final String YOUTUBEDATA_PART     = "snippet";
 
     //Google GEOLOCATION API_KEY, url and data notification ID
-    public static final String GCP_API_KEY  = "hidden";
+    public static final String GCP_API_KEY  = "";
     public static final String YOUTUBEDATA_URL      = "https://www.googleapis.com/";
 
     public static final String SHROUDEDDATA_URL     = "https://shrouded-basin-44060.herokuapp.com/";
+
+    public static final String SERVER_CLIENT_ID     = "1m";
 
 }

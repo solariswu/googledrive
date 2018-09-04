@@ -38,6 +38,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.solariswu.gdrive.R;
+import com.solariswu.gdrive.utils.GdriveConstant;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -133,6 +134,7 @@ public abstract class BaseGdriveActivity extends Activity {
                     new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                             .requestScopes(Drive.SCOPE_FILE)
                             .requestScopes(Drive.SCOPE_APPFOLDER)
+                            .requestIdToken(GdriveConstant.SERVER_CLIENT_ID)
                             .build();
             GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, signInOptions);
             startActivityForResult(googleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
@@ -140,7 +142,7 @@ public abstract class BaseGdriveActivity extends Activity {
     }
 
     /**
-     * Continues the sign-in process, initializing the Drive clients with the current
+     * Continues the sign-in process, initializing the  Drive clients with the current
      * user's account.
      */
     private void initializeDriveClient(GoogleSignInAccount signInAccount) {

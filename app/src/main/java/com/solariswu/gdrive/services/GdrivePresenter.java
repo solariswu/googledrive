@@ -1,6 +1,7 @@
 package com.solariswu.gdrive.services;
 
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
 
 import com.solariswu.gdrive.models.ShroudedData;
@@ -9,6 +10,9 @@ import com.solariswu.gdrive.ui.GdriveView;
 import com.solariswu.gdrive.utils.Log;
 import com.solariswu.gdrive.utils.GdriveConstant;
 
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.annotation.Nullable;
 
@@ -52,30 +56,46 @@ public class GdrivePresenter {
     }
 
 
-    public void PostShroudedData (String query) {
+    public void postShroudedData (String query) {
         Log.i(GDRIVEPRESENTER_LOG, "PostShroudedData:"+ query);
-        mShroudedDataService.postShroudedData(
-                query)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ShroudedData>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.i (GDRIVEPRESENTER_LOG, "Post ShroudedData complete.");
-                    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.i (GDRIVEPRESENTER_LOG, "Post ShroudedData meets error: "+e.getMessage());
-                    }
+        // prepare call in Retrofit 2.0
+        try {
 
-                    @Override
-                    public void onNext(ShroudedData shroudedData) {
-                        if (null != mView) {
-                            mView.updateWithShroudedData (shroudedData);
+
+            JSONObject paramObject = new JSONObject(query);
+
+//            Log.d("My App", obj.toString());
+//
+//            JSONObject paramObject = new JSONObject();
+//            paramObject.put("text", "I like beer");
+
+            mShroudedDataService.postShroudedData(
+                    paramObject.toString())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<ShroudedData>() {
+                        @Override
+                        public void onCompleted() {
+                            Log.i (GDRIVEPRESENTER_LOG, "Post ShroudedData complete.");
                         }
-                    }
-                });
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.i (GDRIVEPRESENTER_LOG, "Post ShroudedData meets error: "+e.getMessage());
+                        }
+
+                        @Override
+                        public void onNext(ShroudedData shroudedData) {
+                            if (null != mView) {
+                                mView.updateWithShroudedData (shroudedData);
+                            }
+                        }
+                    });
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
 

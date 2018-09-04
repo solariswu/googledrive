@@ -18,6 +18,7 @@ import java.io.IOException;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.Retrofit;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Created by yungang on 16/8/15.
@@ -62,6 +63,7 @@ public class RetrofitManager {
             mShroudedDataRetrofit = new Retrofit.Builder()
                     .baseUrl(SERVICE_API_BASE_URL)
                     .client(httpClient)
+                    .addConverterFactory(ScalarsConverterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .build();

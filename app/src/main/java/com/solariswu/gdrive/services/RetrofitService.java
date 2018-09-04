@@ -4,8 +4,11 @@ package com.solariswu.gdrive.services;
 import com.solariswu.gdrive.models.ShroudedData;
 import com.solariswu.gdrive.models.YoutubeData;
 
+import java.util.HashMap;
+
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -22,6 +25,7 @@ import rx.Observable;
 
 public interface RetrofitService {
 
+    @Headers("Content-Type:application/json")
     @POST("/predict")
     Observable<ShroudedData> postShroudedData(@Body String query);
 

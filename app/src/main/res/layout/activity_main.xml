@@ -22,6 +22,11 @@
             android:textSize="24sp"
             android:text="@string/str_unknowgeo"/>
         <Button
+            android:id="@+id/btn_pick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pick a file"/>
+        <Button
             android:id="@+id/btn_post"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
