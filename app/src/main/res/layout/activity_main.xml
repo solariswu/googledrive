@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:height="200dp"
-            android:id="@+id/tv_location"
+            android:id="@+id/tv_logo"
             android:textSize="24sp"
             android:text="@string/app_name"/>
         <Button

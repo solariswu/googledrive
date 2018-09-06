@@ -40,17 +40,8 @@ public class MainActivity extends AppCompatActivity implements GdriveView {
     Unbinder unbinder;
 
     //UI elements
-    @BindView(R.id.tv_location)
+    @BindView(R.id.tv_logo)
     TextView mTVGeoLocation;
-
-    @BindView(R.id.btn_play)
-    Button mButtonPlay;
-
-    @BindView(R.id.btn_search)
-    Button mButtonSearch;
-
-    @BindView(R.id.btn_post)
-    Button mButtonPost;
 
     @BindView(R.id.btn_pick)
     Button mButtonPick;
