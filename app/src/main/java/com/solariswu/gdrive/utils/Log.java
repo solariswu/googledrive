@@ -3,7 +3,7 @@ package com.solariswu.gdrive.utils;
 import com.solariswu.gdrive.BuildConfig;
 
 /**
- * Created by solariswu on 16/10/27.
+ * Created by solariswu on September 5 2018.
  *
  */
 

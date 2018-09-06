@@ -20,6 +20,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 /**
+ * Created by solariswu on September 5 2018.
+ *
+ * Referred from Google Drive sample project.
+ *
  * Activity to illustrate how to retrieve and read file contents.
  */
 public class RetrieveContentsActivity extends BaseGdriveActivity {

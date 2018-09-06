@@ -11,7 +11,12 @@ import android.content.Intent;
 import android.os.Bundle;
 
 /**
+ * Created by solariswu on September 5 2018.
+ *
+ * Modified from Google Gdrive Fragment example.
+ *
  */
+
 public class FragmentYoutubeActivity extends YouTubeFailureRecoveryActivity {
 
     private static final String EXTRA_YOUTUBE_VIDEOID =

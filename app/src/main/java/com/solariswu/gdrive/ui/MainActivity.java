@@ -24,6 +24,12 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
+/**
+ * Created by solariswu on September 5 2018.
+ *
+ * Main UI page of Google drive pick and search Youtube demo.
+ *
+ */
 
 public class MainActivity extends AppCompatActivity implements GdriveView {
 
