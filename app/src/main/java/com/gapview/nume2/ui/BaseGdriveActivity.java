@@ -1,4 +1,4 @@
-package com.solariswu.gdrive.ui;
+package com.gapview.nume2.ui;
 
 /*
  * Copyright 2013 Google Inc. All Rights Reserved.
@@ -37,8 +37,8 @@ import com.google.android.gms.drive.query.SearchableField;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
-import com.solariswu.gdrive.R;
-import com.solariswu.gdrive.utils.GdriveConstant;
+import com.gapview.nume2.R;
+import com.gapview.nume2.utils.GdriveConstant;
 
 import java.util.HashSet;
 import java.util.Set;

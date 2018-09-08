@@ -1,6 +1,6 @@
-package com.solariswu.gdrive.utils;
+package com.gapview.nume2.utils;
 
-import com.solariswu.gdrive.BuildConfig;
+import com.gapview.nume2.BuildConfig;
 
 /**
  * Created by solariswu on September 5 2018.

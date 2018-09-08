@@ -1,4 +1,4 @@
-package com.solariswu.gdrive.ui;
+package com.gapview.nume2.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,14 +9,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.solariswu.gdrive.R;
-import com.solariswu.gdrive.models.ShroudedData;
-import com.solariswu.gdrive.models.YoutubeData;
-import com.solariswu.gdrive.services.GdrivePresenter;
+import com.gapview.nume2.R;
+import com.gapview.nume2.models.ShroudedData;
+import com.gapview.nume2.models.YoutubeData;
+import com.gapview.nume2.services.GdrivePresenter;
 
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

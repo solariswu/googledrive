@@ -1,11 +1,11 @@
-package com.solariswu.gdrive.services;
+package com.gapview.nume2.services;
 
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.solariswu.gdrive.utils.Log;
-import com.solariswu.gdrive.utils.GdriveConstant;
-import com.solariswu.gdrive.utils.MyGsonTypeAdapterFactory;
+import com.gapview.nume2.utils.Log;
+import com.gapview.nume2.utils.GdriveConstant;
+import com.gapview.nume2.utils.MyGsonTypeAdapterFactory;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;

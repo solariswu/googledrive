@@ -1,7 +1,7 @@
-package com.solariswu.gdrive.ui;
+package com.gapview.nume2.ui;
 
-import com.solariswu.gdrive.models.ShroudedData;
-import com.solariswu.gdrive.models.YoutubeData;
+import com.gapview.nume2.models.ShroudedData;
+import com.gapview.nume2.models.YoutubeData;
 
 /**
  * Created by solariswu on September 5 2018.

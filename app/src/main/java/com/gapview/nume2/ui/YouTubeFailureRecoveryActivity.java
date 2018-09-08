@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.solariswu.gdrive.ui;
+package com.gapview.nume2.ui;
 
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
@@ -25,8 +25,8 @@ import com.google.android.youtube.player.YouTubePlayer;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.solariswu.gdrive.R;
-import com.solariswu.gdrive.utils.GdriveConstant;
+import com.gapview.nume2.R;
+import com.gapview.nume2.utils.GdriveConstant;
 
 /**
  * An abstract activity which deals with recovering from errors which may occur during API

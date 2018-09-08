@@ -1,10 +1,10 @@
-package com.solariswu.gdrive.ui;
+package com.gapview.nume2.ui;
 
 
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
-import com.solariswu.gdrive.R;
-import com.solariswu.gdrive.utils.GdriveConstant;
+import com.gapview.nume2.R;
+import com.gapview.nume2.utils.GdriveConstant;
 
 import android.content.Context;
 import android.content.Intent;

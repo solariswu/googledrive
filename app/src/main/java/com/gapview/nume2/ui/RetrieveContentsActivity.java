@@ -1,4 +1,4 @@
-package com.solariswu.gdrive.ui;
+package com.gapview.nume2.ui;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,8 +13,8 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.solariswu.gdrive.R;
-import com.solariswu.gdrive.ui.BaseGdriveActivity;
+import com.gapview.nume2.R;
+import com.gapview.nume2.ui.BaseGdriveActivity;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

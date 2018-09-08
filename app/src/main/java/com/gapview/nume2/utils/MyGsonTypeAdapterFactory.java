@@ -1,4 +1,4 @@
-package com.solariswu.gdrive.utils;
+package com.gapview.nume2.utils;
 
 import com.google.gson.TypeAdapterFactory;
 import com.ryanharter.auto.value.gson.GsonTypeAdapterFactory;

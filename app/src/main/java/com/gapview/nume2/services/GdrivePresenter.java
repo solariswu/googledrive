@@ -1,14 +1,13 @@
-package com.solariswu.gdrive.services;
+package com.gapview.nume2.services;
 
 import android.support.annotation.NonNull;
-import android.widget.Toast;
 
 
-import com.solariswu.gdrive.models.ShroudedData;
-import com.solariswu.gdrive.models.YoutubeData;
-import com.solariswu.gdrive.ui.GdriveView;
-import com.solariswu.gdrive.utils.Log;
-import com.solariswu.gdrive.utils.GdriveConstant;
+import com.gapview.nume2.models.ShroudedData;
+import com.gapview.nume2.models.YoutubeData;
+import com.gapview.nume2.ui.GdriveView;
+import com.gapview.nume2.utils.Log;
+import com.gapview.nume2.utils.GdriveConstant;
 
 
 import org.json.JSONException;
@@ -20,8 +19,6 @@ import retrofit2.Retrofit;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.solariswu.gdrive.utils.GdriveConstant.GDRIVEPRESENTER_LOG;
 
 /**
  * Created by solariswu on 16/10/5.
@@ -57,18 +54,16 @@ public class GdrivePresenter {
 
 
     public void postShroudedData (String query) {
-        Log.i(GDRIVEPRESENTER_LOG, "PostShroudedData:"+ query);
+        Log.i(GdriveConstant.GDRIVEPRESENTER_LOG, "PostShroudedData:"+ query);
 
         // prepare call in Retrofit 2.0
         try {
 
 
-            JSONObject paramObject = new JSONObject(query);
+            //JSONObject paramObject = new JSONObject(query);
 
-//            Log.d("My App", obj.toString());
-//
-//            JSONObject paramObject = new JSONObject();
-//            paramObject.put("text", "I like beer");
+            JSONObject paramObject = new JSONObject();
+            paramObject.put(GdriveConstant.SHROUDEDATA_JSON_KEY, query);
 
             mShroudedDataService.postShroudedData(
                     paramObject.toString())
@@ -77,12 +72,14 @@ public class GdrivePresenter {
                     .subscribe(new Subscriber<ShroudedData>() {
                         @Override
                         public void onCompleted() {
-                            Log.i (GDRIVEPRESENTER_LOG, "Post ShroudedData complete.");
+                            Log.i (GdriveConstant.GDRIVEPRESENTER_LOG,
+                                    "Post ShroudedData complete.");
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            Log.i (GDRIVEPRESENTER_LOG, "Post ShroudedData meets error: "+e.getMessage());
+                            Log.i (GdriveConstant.GDRIVEPRESENTER_LOG,
+                                    "Post ShroudedData meets error: "+e.getMessage());
                         }
 
                         @Override
@@ -100,7 +97,7 @@ public class GdrivePresenter {
     }
 
     public void fetchYoutubeData (String query) {
-        Log.i(GDRIVEPRESENTER_LOG, "FetchYoutubeData:"+ query);
+        Log.i(GdriveConstant.GDRIVEPRESENTER_LOG, "FetchYoutubeData:"+ query);
 
         mYoutubeService.getYoutubeData(GdriveConstant.YOUTUBEDATA_TYPE,
                 GdriveConstant.YOUTUBEDATA_PART,
@@ -112,12 +109,14 @@ public class GdrivePresenter {
                 .subscribe(new Subscriber<YoutubeData>() {
                     @Override
                     public void onCompleted() {
-                        Log.i (GDRIVEPRESENTER_LOG, "Search Youtube complete.");
+                        Log.i (GdriveConstant.GDRIVEPRESENTER_LOG,
+                                "Search Youtube complete.");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i (GDRIVEPRESENTER_LOG, "Search Youtube meets error: "+e.getMessage());
+                        Log.i (GdriveConstant.GDRIVEPRESENTER_LOG,
+                                "Search Youtube meets error: "+e.getMessage());
                     }
 
                     @Override
