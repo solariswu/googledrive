@@ -20,6 +20,9 @@ public abstract class Item {
     @SerializedName("id")
     public abstract IdBean id();
 
+    @SerializedName("snippet")
+    public abstract Snippet snippet();
+
     public static Builder builder() {
         return new AutoValue_Item.Builder();
     }
@@ -27,6 +30,7 @@ public abstract class Item {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract Builder id(IdBean id);
+        public abstract Builder snippet(Snippet snippet);
 
         public abstract Item build();
     }

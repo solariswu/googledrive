@@ -10,5 +10,6 @@
     <string name="folder_not_selected">No folder selected, can not continue.</string>
     <string name="content_loaded">File contents successfully read.</string>
     <string name="read_failed">Error while retrieving file.</string>
+    <string name="query_failed">Error while quering files.</string>
 
 </resources>

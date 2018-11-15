@@ -13,6 +13,9 @@ import com.gapview.nume2.utils.GdriveConstant;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import retrofit2.Retrofit;
@@ -53,7 +56,7 @@ public class GdrivePresenter {
     }
 
 
-    public void postShroudedData (String query) {
+    public void postShroudedData (Integer contentCount, ArrayList<String> query) {
         Log.i(GdriveConstant.GDRIVEPRESENTER_LOG, "PostShroudedData:"+ query);
 
         // prepare call in Retrofit 2.0
@@ -63,6 +66,7 @@ public class GdrivePresenter {
             //JSONObject paramObject = new JSONObject(query);
 
             JSONObject paramObject = new JSONObject();
+            paramObject.put("num_text", contentCount);
             paramObject.put(GdriveConstant.SHROUDEDATA_JSON_KEY, query);
 
             mShroudedDataService.postShroudedData(
@@ -101,7 +105,7 @@ public class GdrivePresenter {
 
         mYoutubeService.getYoutubeData(GdriveConstant.YOUTUBEDATA_TYPE,
                 GdriveConstant.YOUTUBEDATA_PART,
-                "items/id",
+                "items",
                 GdriveConstant.GCP_API_KEY,
                 query)
                 .subscribeOn(Schedulers.io())

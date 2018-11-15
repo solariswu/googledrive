@@ -13,7 +13,10 @@ import com.gapview.nume2.R;
 import com.gapview.nume2.models.ShroudedData;
 import com.gapview.nume2.models.YoutubeData;
 import com.gapview.nume2.services.GdrivePresenter;
+import com.gapview.nume2.utils.WordCount;
 
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +35,9 @@ public class MainActivity extends AppCompatActivity implements GdriveView {
 
     private static final String EXTRA_IS_FROM_DGRIVE =
             "com.solariswu.gdrive.ui.EXTRA_FROM_DGRIVE";
+
+    private static final String EXTRA_CONTENT_COUNT =
+            "com.solariswu.gdrive.ui.EXTRA_CONTENT_COUNT";
 
     private static final String EXTRA_GDRIVE_CONTENT =
             "com.solariswu.gdrive.ui.EXTRA_GDRIVE_CONTENT";
@@ -61,10 +67,16 @@ public class MainActivity extends AppCompatActivity implements GdriveView {
         mGdrivePresenter.onCreate(this);
 
         if (getIntent().getBooleanExtra(EXTRA_IS_FROM_DGRIVE, false)) {
-            String gdriveContent = getIntent().getStringExtra(EXTRA_GDRIVE_CONTENT);
+            ArrayList<String> gdriveContent = getIntent().getStringArrayListExtra(EXTRA_GDRIVE_CONTENT);
+            Integer contentCount = getIntent().getIntExtra(EXTRA_CONTENT_COUNT,0);
             Toast.makeText(this, "Retrieved file content: " + gdriveContent,
                     Toast.LENGTH_LONG).show();
-            mGdrivePresenter.postShroudedData(gdriveContent);
+            if (0 < contentCount) {
+                mGdrivePresenter.postShroudedData(contentCount, gdriveContent);
+            }
+            else {
+                Toast.makeText(this, "No content!", Toast.LENGTH_LONG);
+            }
         }
     }
 
@@ -82,8 +94,18 @@ public class MainActivity extends AppCompatActivity implements GdriveView {
 
     @Override
     public void updateWithShroudedData (ShroudedData shroudedData) {
-        //mTVGeoLocation.setText(shroudedData.classification());
-        mGdrivePresenter.fetchYoutubeData(shroudedData.classification());
+        String query_string;
+
+        String classification = shroudedData.classification().toString();
+        classification = classification.substring(1, classification.length()-1);
+
+        String tag = shroudedData.tag_classfication().toString();
+        tag = tag.substring(1, tag.length()-1);
+
+        query_string = WordCount.getHighestWord(classification);
+        query_string += " " + WordCount.getHighestWord(tag);
+
+        mGdrivePresenter.fetchYoutubeData(query_string);
         Toast.makeText(this, "Got the server predict classification: " +
                 shroudedData.classification(), Toast.LENGTH_LONG).show();
     }
@@ -91,12 +113,16 @@ public class MainActivity extends AppCompatActivity implements GdriveView {
     @Override
     public void updateWithYoutubeData (YoutubeData youtubeData) {
         //mTVGeoLocation.setText(youtubeData.items().get(0).id().videoId());
+        //todo: change to list
         if (null != youtubeData) {
             String videoId = youtubeData.items().get(0).id().videoId();
-            startActivity(FragmentYoutubeActivity.getStartIntent(this,
-                    videoId));
-            Toast.makeText(this, "Youtube Search result - videoId: " + videoId,
-                    Toast.LENGTH_LONG).show();
+            String title1 = youtubeData.items().get(0).snippet().title();
+            String videoId2 = youtubeData.items().get(1).id().videoId();
+            String title2 = youtubeData.items().get(2).snippet().title();
+
+            startActivity(YouTubeVideoListActivity.getStartIntent(this,
+                    videoId, videoId2, title1, title2));
+
         }
         else Toast.makeText(this, "No valid Youtube Video search result found!",
                 Toast.LENGTH_LONG).show();
@@ -114,9 +140,10 @@ public class MainActivity extends AppCompatActivity implements GdriveView {
 
     }
 
-    public static Intent getStartIntent (Context context, String content) {
+    public static Intent getStartIntent (Context context, Integer contentCount, ArrayList<String> content) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(EXTRA_IS_FROM_DGRIVE, true);
+        intent.putExtra(EXTRA_CONTENT_COUNT, contentCount);
         intent.putExtra(EXTRA_GDRIVE_CONTENT, content);
         return intent;
     }

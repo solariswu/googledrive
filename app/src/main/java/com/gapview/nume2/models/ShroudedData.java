@@ -5,15 +5,22 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 @AutoValue
 public abstract class ShroudedData {
 
     @SerializedName("classification")
-    public abstract String classification();
+    public abstract List<String> classification();
 
-    public static ShroudedData create(String classification) {
+    @SerializedName("tag_classfication")
+    public abstract List<String> tag_classfication();
+
+
+    public static ShroudedData create(List<String> classification, List<String>tag_classfication) {
         return builder()
                 .classification(classification)
+                .tag_classfication(tag_classfication)
                 .build();
     }
 
@@ -24,7 +31,8 @@ public abstract class ShroudedData {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder classification(String Classification);
+        public abstract Builder classification(List<String> Classification);
+        public abstract Builder tag_classfication(List<String> Tag_classfication);
 
         public abstract ShroudedData build();
     }

@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '28.0.1'
+    buildToolsVersion '28.0.3'
 
     lintOptions {
         abortOnError false
@@ -40,7 +40,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
-    implementation 'com.squareup.okhttp3:okhttp:3.8.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.8.0'
 
     compileOnly 'com.jakewharton.auto.value:auto-value-annotations:1.5'
@@ -49,15 +49,15 @@ dependencies {
     annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.4-rc2'
     annotationProcessor 'com.ryanharter.auto.value:auto-value-gson:0.8.0'
     implementation 'com.ryanharter.auto.value:auto-value-gson-annotations:0.8.0'
-    implementation 'com.google.code.gson:gson:2.8.1'
+    implementation 'com.google.code.gson:gson:2.8.2'
     annotationProcessor 'com.squareup:javapoet:1.9.0'
     implementation('com.google.api-client:google-api-client:1.22.0') {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
 
     implementation 'com.android.support:design:27.1.1'
-    implementation 'com.google.android.gms:play-services-auth:16.0.0'
-    implementation 'com.google.android.gms:play-services-drive:15.0.1'
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    implementation 'com.google.android.gms:play-services-drive:16.0.0'
 
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
