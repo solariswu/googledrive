@@ -144,7 +144,9 @@ public class RetrieveContentsActivity extends BaseGdriveActivity {
 
         for (Metadata metadata : metadataBuffer) {
             Log.d(TAG, "metaTitle: " + metadata.getTitle() + "metaType: " + metadata.getMimeType());
-            retrieveContents(metadata.getDriveId().asDriveFile());
+            if (!metadata.isFolder() && metadata.getMimeType().contentEquals("text/plain")) {
+                retrieveContents(metadata.getDriveId().asDriveFile());
+            }
         }
 
     }
