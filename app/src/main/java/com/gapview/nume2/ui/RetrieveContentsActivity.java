@@ -1,28 +1,23 @@
 package com.gapview.nume2.ui;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.drive.DriveContents;
 import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveFolder;
-import com.google.android.gms.drive.DriveId;
+import com.google.android.gms.drive.DriveStatusCodes;
 import com.google.android.gms.drive.Metadata;
 import com.google.android.gms.drive.MetadataBuffer;
-import com.google.android.gms.drive.query.Filter;
 import com.google.android.gms.drive.query.Filters;
 import com.google.android.gms.drive.query.Query;
 import com.google.android.gms.drive.query.SearchableField;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.gapview.nume2.R;
-import com.gapview.nume2.ui.BaseGdriveActivity;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -63,10 +58,17 @@ public class RetrieveContentsActivity extends BaseGdriveActivity {
                 .addOnSuccessListener(this,
                         okay -> onRequesySyncReady())
                 .addOnFailureListener(this, e -> {
-                    Log.e(TAG, "Failure of get folder:" + e.getCause().getMessage());
                     Log.e(TAG, "No folder selected", e);
-                    showMessage(getString(R.string.folder_not_selected));
-                    finish();
+                    ApiException apiException = (ApiException) e;
+                    if (DriveStatusCodes.DRIVE_RATE_LIMIT_EXCEEDED == apiException.getStatusCode()) {
+                        //Here I know Drive rate limit was exceeded.
+                        Log.e(TAG, "Too many sync request to Drive", e);
+                        onRequesySyncReady();
+                    }
+                    else {
+                        showMessage(getString(R.string.folder_not_selected));
+                        finish();
+                    }
                 });
 
 
@@ -110,11 +112,11 @@ public class RetrieveContentsActivity extends BaseGdriveActivity {
 
 //        Filter parentFilter = Filters.in(SearchableField.PARENTS, parentDriverId);
         // [START drive_android_query_title]
-//        // Searching all text/plain files
+        // Searching all text/plain files
         Query query = new Query.Builder()
 //                .addFilter(Filters.eq(SearchableField.TITLE, "test.txt"))
-//                .addFilter(Filters.eq(SearchableField.MIME_TYPE, "text/plain"))
-                //.addFilter(Filters.contains(SearchableField.TITLE, ".txt"))
+                .addFilter(Filters.eq(SearchableField.MIME_TYPE, "text/plain"))
+//                .addFilter(Filters.contains(SearchableField.TITLE, ".txt"))
                 .build();
         // [END drive_android_query_title]
 
@@ -139,11 +141,11 @@ public class RetrieveContentsActivity extends BaseGdriveActivity {
             Toast.makeText(this, "No text files found!", Toast.LENGTH_LONG).show();
         }
 
-        String s;
         metaDataCount = metadataBuffer.getCount();
 
         for (Metadata metadata : metadataBuffer) {
-            Log.d(TAG, "metaTitle: " + metadata.getTitle() + "metaType: " + metadata.getMimeType());
+            logit(metadata);
+//            Log.d(TAG, "metaTitle: " + metadata.getTitle() + "metaType: " + metadata.getMimeType());
             if (!metadata.isFolder() && metadata.getMimeType().contentEquals("text/plain")) {
                 retrieveContents(metadata.getDriveId().asDriveFile());
             }
