@@ -10,13 +10,11 @@ import com.gapview.nume2.utils.Log;
 import com.gapview.nume2.utils.GdriveConstant;
 
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
 
 import retrofit2.Retrofit;
 import rx.Subscriber;
@@ -34,7 +32,7 @@ public class GdrivePresenter {
     private RetrofitService mYoutubeService;
     private RetrofitService mShroudedDataService;
 
-    @Nullable
+    //@Nullable
     private GdriveView mView;
 
     public void onCreate(@NonNull GdriveView gdriveViewView) {
@@ -62,12 +60,11 @@ public class GdrivePresenter {
         // prepare call in Retrofit 2.0
         try {
 
-
-            //JSONObject paramObject = new JSONObject(query);
+            JSONArray mJSONArray = new JSONArray(query);
 
             JSONObject paramObject = new JSONObject();
             paramObject.put("num_text", contentCount);
-            paramObject.put(GdriveConstant.SHROUDEDATA_JSON_KEY, query);
+            paramObject.put(GdriveConstant.SHROUDEDATA_JSON_KEY, mJSONArray);
 
             mShroudedDataService.postShroudedData(
                     paramObject.toString())
