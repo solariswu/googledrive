@@ -84,7 +84,7 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
     private VideoFragment videoFragment;
 
     private View videoBox;
-    private View closeButton;
+    //private View closeButton;
 
     private boolean isFullscreen;
 
@@ -100,6 +100,7 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
     private String mVideoTitleA;
     private String mVideoIdB;
     private String mVideoTitleB;
+    private TextView mClipTitle;
 
 
     @Override
@@ -116,7 +117,7 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
 
         listFragment = (VideoListFragment) getFragmentManager().findFragmentById(R.id.list_fragment);
 
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         list.add(mVideoTitleA);
         list.add(mVideoIdA);
         list.add(mVideoTitleB);
@@ -130,10 +131,16 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
                 (VideoFragment) getFragmentManager().findFragmentById(R.id.video_fragment_container);
 
         videoBox = findViewById(R.id.video_box);
-        closeButton = findViewById(R.id.close_button);
+        //closeButton = findViewById(R.id.close_button);
 
         videoBox.setVisibility(View.INVISIBLE);
 
+        VideoFragment videoFragment =
+                (VideoFragment) getFragmentManager().findFragmentById(R.id.video_fragment_container);
+        videoFragment.setVideoId(mVideoIdA);
+
+        mClipTitle = findViewById(R.id.tv_video_title);
+        mClipTitle.setText(mVideoTitleA);
 
         layout();
 
@@ -186,16 +193,16 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
 
         listFragment.getView().setVisibility(isFullscreen ? View.GONE : View.VISIBLE);
         listFragment.setLabelVisibility(isPortrait);
-        closeButton.setVisibility(isPortrait ? View.VISIBLE : View.GONE);
+        //closeButton.setVisibility(isPortrait ? View.VISIBLE : View.GONE);
 
         if (isFullscreen) {
             videoBox.setTranslationY(0); // Reset any translation that was applied in portrait.
             setLayoutSize(videoFragment.getView(), MATCH_PARENT, MATCH_PARENT);
-            setLayoutSizeAndGravity(videoBox, MATCH_PARENT, MATCH_PARENT, Gravity.TOP | Gravity.LEFT);
+            setLayoutSizeAndGravity(videoBox, MATCH_PARENT, MATCH_PARENT, Gravity.TOP | Gravity.START);
         } else if (isPortrait) {
             setLayoutSize(listFragment.getView(), MATCH_PARENT, MATCH_PARENT);
             setLayoutSize(videoFragment.getView(), MATCH_PARENT, WRAP_CONTENT);
-            setLayoutSizeAndGravity(videoBox, MATCH_PARENT, WRAP_CONTENT, Gravity.BOTTOM);
+            setLayoutSizeAndGravity(videoBox, MATCH_PARENT, WRAP_CONTENT, Gravity.TOP);
         } else {
             videoBox.setTranslationY(0); // Reset any translation that was applied in portrait.
             int screenWidth = dpToPx(getResources().getConfiguration().screenWidthDp);
@@ -203,24 +210,10 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
             int videoWidth = screenWidth - screenWidth / 4 - dpToPx(LANDSCAPE_VIDEO_PADDING_DP);
             setLayoutSize(videoFragment.getView(), videoWidth, WRAP_CONTENT);
             setLayoutSizeAndGravity(videoBox, videoWidth, WRAP_CONTENT,
-                    Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+                    Gravity.END | Gravity.CENTER_VERTICAL);
         }
     }
 
-    public void onClickClose(@SuppressWarnings("unused") View view) {
-        listFragment.getListView().clearChoices();
-        listFragment.getListView().requestLayout();
-        videoFragment.pause();
-        ViewPropertyAnimator animator = videoBox.animate()
-                .translationYBy(videoBox.getHeight())
-                .setDuration(ANIMATION_DURATION_MILLIS);
-        runOnAnimationEnd(animator, new Runnable() {
-            @Override
-            public void run() {
-                videoBox.setVisibility(View.INVISIBLE);
-            }
-        });
-    }
 
     @TargetApi(16)
     private void runOnAnimationEnd(ViewPropertyAnimator animator, final Runnable runnable) {
@@ -255,16 +248,17 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
                 ArrayList<String> stringList = bundle.getStringArrayList("YBList");
 
                 if (0 < stringList.size()) {
-                    List<VideoEntry> list = new ArrayList<VideoEntry>();
+                    List<VideoEntry> list = new ArrayList<>();
                     list.add(new VideoEntry(stringList.get(0), stringList.get(1)));
                     list.add(new VideoEntry(stringList.get(2), stringList.get(3)));
+
                     VIDEO_LIST = Collections.unmodifiableList(list);
 
                     adapter = new PageAdapter(getActivity(), VIDEO_LIST);
                 }
             }
             else {
-                List<VideoEntry> list = new ArrayList<VideoEntry>();
+                List<VideoEntry> list = new ArrayList<>();
                 list.add(new VideoEntry("", "UiLSiqyDf4Y"));
                 VIDEO_LIST = Collections.unmodifiableList(list);
                 adapter = new PageAdapter(getActivity(), VIDEO_LIST);
@@ -279,9 +273,10 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
             ArrayList<String> stringList= bundle.getStringArrayList("YBList");
 
             if (0 < stringList.size()) {
-                List<VideoEntry> list = new ArrayList<VideoEntry>();
+                List<VideoEntry> list = new ArrayList<>();
                 list.add(new VideoEntry(stringList.get(0), stringList.get(1)));
                 list.add(new VideoEntry(stringList.get(2), stringList.get(3)));
+
                 VIDEO_LIST = Collections.unmodifiableList(list);
 
                 adapter = new PageAdapter(getActivity(), VIDEO_LIST);
@@ -290,15 +285,6 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
             videoBox = getActivity().findViewById(R.id.video_box);
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             setListAdapter(adapter);
-        }
-
-        @Override
-        public void onListItemClick(ListView l, View v, int position, long id) {
-            String videoId = VIDEO_LIST.get(position).videoId;
-
-            VideoFragment videoFragment =
-                    (VideoFragment) getFragmentManager().findFragmentById(R.id.video_fragment_container);
-            videoFragment.setVideoId(videoId);
 
             // The videoBox is INVISIBLE if no video was previously selected, so we need to show it now.
             if (videoBox.getVisibility() != View.VISIBLE) {
@@ -313,6 +299,19 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
             if (videoBox.getTranslationY() > 0) {
                 videoBox.animate().translationY(0).setDuration(ANIMATION_DURATION_MILLIS);
             }
+        }
+
+        @Override
+        public void onListItemClick(ListView l, View v, int position, long id) {
+            String videoId = VIDEO_LIST.get(position).videoId;
+
+            VideoFragment videoFragment =
+                    (VideoFragment) getFragmentManager().findFragmentById(R.id.video_fragment_container);
+            videoFragment.setVideoId(videoId);
+
+            TextView tvVideoTitle = getActivity().findViewById(R.id.tv_video_title);
+            tvVideoTitle.setText(VIDEO_LIST.get(position).text);
+
         }
 
         @Override
@@ -357,8 +356,8 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
         public PageAdapter(Context context, List<VideoEntry> entries) {
             this.entries = entries;
 
-            entryViews = new ArrayList<View>();
-            thumbnailViewToLoaderMap = new HashMap<YouTubeThumbnailView, YouTubeThumbnailLoader>();
+            entryViews = new ArrayList<>();
+            thumbnailViewToLoaderMap = new HashMap<>();
             inflater = LayoutInflater.from(context);
             thumbnailListener = new ThumbnailListener();
 
@@ -402,11 +401,11 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
             if (view == null) {
                 // 1) The view has not yet been created - we need to initialize the YouTubeThumbnailView.
                 view = inflater.inflate(R.layout.video_list_item, parent, false);
-                YouTubeThumbnailView thumbnail = (YouTubeThumbnailView) view.findViewById(R.id.thumbnail);
+                YouTubeThumbnailView thumbnail = view.findViewById(R.id.thumbnail);
                 thumbnail.setTag(entry.videoId);
                 thumbnail.initialize(GdriveConstant.GCP_API_KEY, thumbnailListener);
             } else {
-                YouTubeThumbnailView thumbnail = (YouTubeThumbnailView) view.findViewById(R.id.thumbnail);
+                YouTubeThumbnailView thumbnail = view.findViewById(R.id.thumbnail);
                 YouTubeThumbnailLoader loader = thumbnailViewToLoaderMap.get(thumbnail);
                 if (loader == null) {
                     // 2) The view is already created, and is currently being initialized. We store the
@@ -419,7 +418,7 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
                     loader.setVideo(entry.videoId);
                 }
             }
-            TextView label = ((TextView) view.findViewById(R.id.text));
+            TextView label = view.findViewById(R.id.text);
             label.setText(entry.text);
             label.setVisibility(labelsVisible ? View.VISIBLE : View.GONE);
             return view;
