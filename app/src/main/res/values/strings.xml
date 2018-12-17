@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">G drive Demo</string>
+    <string name="app_name">NuMe</string>
+    <string name="sub_title">Helps you manage your life</string>
+    <string name="Next">Next</string>
     <string name="str_today">12 Hours</string>
     <string name="playerfragment_demo">Like this demo?</string>
     <string name="playerfragment_text">Play Youtube</string>
