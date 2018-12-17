@@ -16,8 +16,9 @@ public class GdriveConstant {
 
     //Google G cloud API KEY, url and data notification ID
     public static final String YOUTUBEDATA_URL      = "https://www.googleapis.com/";
-    public static final String GCP_API_KEY          = "";
-    public static final String SERVER_CLIENT_ID     = "";
+    public static final String GCP_API_KEY          = "AIzaSyDlRIQN7yqxRS0xcjRndXuEgYBH9FzRX3A";
+    public static final String SERVER_CLIENT_ID     = "1036598661932-v0806fnl1fj5jv9nb0cq74cvnkiu1flo.apps.googleusercontent.com";
+    public static final String CLIENT_SECRET         = "iK06EeV8OcveRvNoqU6fsLk3";
 
     //Predict server url, json data key
     public static final String SHROUDEDDATA_URL     = "https://shrouded-basin-44060.herokuapp.com/";

@@ -6,6 +6,12 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gapview.nume2.models.File;
+import com.gapview.nume2.models.GdriveData;
+import com.gapview.nume2.models.YoutubeData;
+import com.gapview.nume2.services.RetrofitManager;
+import com.gapview.nume2.services.RetrofitService;
+import com.gapview.nume2.utils.GdriveConstant;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.drive.DriveContents;
 import com.google.android.gms.drive.DriveFile;
@@ -22,6 +28,13 @@ import com.gapview.nume2.R;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+
+import retrofit2.Retrofit;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+import static com.gapview.nume2.utils.GdriveConstant.GCP_API_KEY;
 
 /**
  * Created by solariswu on September 5 2018.
@@ -40,6 +53,7 @@ public class RetrieveContentsActivity extends BaseGdriveActivity {
     private ArrayList<String> mAlFileConents;
     private Integer mIntFileCount;
     private Integer metaDataCount;
+    private RetrofitService mGdriveService;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,20 +64,26 @@ public class RetrieveContentsActivity extends BaseGdriveActivity {
         mAlFileConents = new ArrayList<>();
         mIntFileCount = 0;
         metaDataCount = 0;
+
+        Retrofit gdriveRetrofit = RetrofitManager.getInstance()
+                .buildYoutubeRetrofit(GdriveConstant.YOUTUBEDATA_URL);
+
+        mGdriveService = gdriveRetrofit.create(RetrofitService.class);
+
     }
 
     @Override
     protected void onDriveClientReady() {
         getDriveClient().requestSync()
                 .addOnSuccessListener(this,
-                        okay -> onRequesySyncReady())
+                        okay -> onRequestSyncReady())
                 .addOnFailureListener(this, e -> {
                     Log.e(TAG, "No folder selected", e);
                     ApiException apiException = (ApiException) e;
                     if (DriveStatusCodes.DRIVE_RATE_LIMIT_EXCEEDED == apiException.getStatusCode()) {
                         //Here I know Drive rate limit was exceeded.
                         Log.e(TAG, "Too many sync request to Drive", e);
-                        onRequesySyncReady();
+                        onRequestSyncReady();
                     }
                     else {
                         showMessage(getString(R.string.folder_not_selected));
@@ -71,18 +91,9 @@ public class RetrieveContentsActivity extends BaseGdriveActivity {
                     }
                 });
 
-
-//        pickTextFile()
-//                .addOnSuccessListener(this,
-//                        driveId -> printFile(driveId.asDriveFile()))//retrieveContents(driveId.asDriveFile()))
-//                .addOnFailureListener(this, e -> {
-//                    Log.e(TAG, "No file selected", e);
-//                    showMessage(getString(R.string.file_not_selected));
-//                    finish();
-//                });
     }
 
-    private void onRequesySyncReady () {
+    private void onRequestSyncReady () {
         pickFolder()
                 .addOnSuccessListener(this,
                         driveId -> queryFolder(driveId.asDriveFolder()))
@@ -93,47 +104,85 @@ public class RetrieveContentsActivity extends BaseGdriveActivity {
                 });
     }
 
-    private void printFile (DriveFile file) {
-         getDriveResourceClient().getMetadata(file)
-                 .addOnSuccessListener(this,
-                         metaData -> logit(metaData))
-                 .addOnFailureListener(this, e -> {
-                     Log.e(TAG, "Error retrieving files", e);
-                     showMessage(getString(R.string.query_failed));
-                     finish();
-                 });
-    }
+//        pickTextFile()
+//                .addOnSuccessListener(this,
+//                        driveId -> printFile(driveId.asDriveFile()))//retrieveContents(driveId.asDriveFile()))
+//                .addOnFailureListener(this, e -> {
+//                    Log.e(TAG, "No file selected", e);
+//                    showMessage(getString(R.string.file_not_selected));
+//                    finish();
+//                });
+//
+//    private void printFile (DriveFile file) {
+//         getDriveResourceClient().getMetadata(file)
+//                 .addOnSuccessListener(this,
+//                         metaData -> logit(metaData))
+//                 .addOnFailureListener(this, e -> {
+//                     Log.e(TAG, "Error retrieving files", e);
+//                     showMessage(getString(R.string.query_failed));
+//                     finish();
+//                 });
+//    }
 
     private void logit (Metadata metadata) {
         Log.d (TAG, "metaTitle " + metadata.getTitle() + " Type: " + metadata.getMimeType());
     }
 
-    private void queryFolder (DriveFolder folder)  {
+    private void queryFolder (DriveFolder folder) {
+
+        String accessToken = super.getStoredAccessToken();
+
+        mGdriveService.getGdriveData("Bearer "+accessToken,
+                "user",
+                "'"+folder.getDriveId().getResourceId()+"' in parents")
+          .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<GdriveData>() {
+                    @Override
+                    public void onCompleted() {
+                        com.gapview.nume2.utils.Log.i (GdriveConstant.GDRIVEPRESENTER_LOG,
+                                "Search Gdrive complete.");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        com.gapview.nume2.utils.Log.i (GdriveConstant.GDRIVEPRESENTER_LOG,
+                                "Search Gdrive meets error: "+e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(GdriveData gdriveData) {
+                       retriveAllContents(gdriveData);
+                    }
+                });
+    }
+
+//    private void queryFolder (DriveFolder folder)  {
 
 //        Filter parentFilter = Filters.in(SearchableField.PARENTS, parentDriverId);
         // [START drive_android_query_title]
         // Searching all text/plain files
-        Query query = new Query.Builder()
+//        Query query = new Query.Builder()
 //                .addFilter(Filters.eq(SearchableField.TITLE, "test.txt"))
-                .addFilter(Filters.eq(SearchableField.MIME_TYPE, "text/plain"))
+//                .addFilter(Filters.eq(SearchableField.MIME_TYPE, "text/plain"))
 //                .addFilter(Filters.contains(SearchableField.TITLE, ".txt"))
-                .build();
+//                .build();
         // [END drive_android_query_title]
 
         // Searching current folder
 //         Task<MetadataBuffer> queryTask = getDriveResourceClient().query(query);
         // alter code
         // Search the folder
-        Task<MetadataBuffer> queryTask = getDriveResourceClient().queryChildren(folder, query);
-        queryTask
-                        .addOnSuccessListener(this,
-                                metadataBuffer -> retrieveAllContents(metadataBuffer))
-                        .addOnFailureListener(this, e -> {
-                            Log.e(TAG, "Error retrieving files", e);
-                            showMessage(getString(R.string.query_failed));
-                            finish();
-                        });
-    }
+//        Task<MetadataBuffer> queryTask = getDriveResourceClient().queryChildren(folder, query);
+//        queryTask
+//                        .addOnSuccessListener(this,
+//                                metadataBuffer -> retrieveAllContents(metadataBuffer))
+//                        .addOnFailureListener(this, e -> {
+//                            Log.e(TAG, "Error retrieving files", e);
+//                            showMessage(getString(R.string.query_failed));
+//                            finish();
+//                        });
+//    }
 
     private void retrieveAllContents(MetadataBuffer metadataBuffer) {
         if (0 == metadataBuffer.getCount()) {
@@ -150,7 +199,14 @@ public class RetrieveContentsActivity extends BaseGdriveActivity {
                 retrieveContents(metadata.getDriveId().asDriveFile());
             }
         }
+    }
 
+    private  void retriveAllContents(GdriveData gdriveData) {
+        for (File file : gdriveData.files()) {
+            if (file.mimeType().contentEquals("text/plain")) {
+                //retrieveContents(file.id());
+            }
+        }
     }
 
     private void retrieveContents(DriveFile file) {

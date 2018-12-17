@@ -17,10 +17,12 @@ package com.gapview.nume2.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.gapview.nume2.models.GTokensData;
+import com.gapview.nume2.services.RetrofitManager;
+import com.gapview.nume2.services.RetrofitService;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -42,6 +44,15 @@ import com.gapview.nume2.utils.GdriveConstant;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import retrofit2.Retrofit;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+import static com.gapview.nume2.utils.GdriveConstant.CLIENT_SECRET;
+import static com.gapview.nume2.utils.GdriveConstant.SERVER_CLIENT_ID;
+
 
 /**
  * An abstract activity that handles authorization and connection to the Drive services.
@@ -69,6 +80,11 @@ public abstract class BaseGdriveActivity extends Activity {
      */
     private DriveResourceClient mDriveResourceClient;
 
+
+    private RetrofitService mGtokensService;
+
+    private String mAccessToken;
+
     /**
      * Tracks completion of the drive picker
      */
@@ -77,6 +93,12 @@ public abstract class BaseGdriveActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        Retrofit gdriveRetrofit = RetrofitManager.getInstance()
+                .buildYoutubeRetrofit(GdriveConstant.YOUTUBEDATA_URL);
+
+        mGtokensService = gdriveRetrofit.create(RetrofitService.class);
+
         signIn();
     }
 
@@ -126,19 +148,22 @@ public abstract class BaseGdriveActivity extends Activity {
         Set<Scope> requiredScopes = new HashSet<>(2);
         requiredScopes.add(Drive.SCOPE_FILE);
         requiredScopes.add(Drive.SCOPE_APPFOLDER);
-        GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
-        if (signInAccount != null && signInAccount.getGrantedScopes().containsAll(requiredScopes)) {
-            initializeDriveClient(signInAccount);
-        } else {
+        // todo: cache signed-in
+        // GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
+        // if (signInAccount != null && signInAccount.getGrantedScopes().containsAll(requiredScopes)) {
+            //getAccessToken();
+      //      initializeDriveClient(signInAccount);
+      //  } else {
             GoogleSignInOptions signInOptions =
                     new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                             .requestScopes(Drive.SCOPE_FILE)
                             .requestScopes(Drive.SCOPE_APPFOLDER)
-                            .requestIdToken(GdriveConstant.SERVER_CLIENT_ID)
+                            .requestIdToken(SERVER_CLIENT_ID)
+                            .requestServerAuthCode(SERVER_CLIENT_ID)
                             .build();
             GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, signInOptions);
             startActivityForResult(googleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
-        }
+      //  }
     }
 
     /**
@@ -148,7 +173,7 @@ public abstract class BaseGdriveActivity extends Activity {
     private void initializeDriveClient(GoogleSignInAccount signInAccount) {
         mDriveClient = Drive.getDriveClient(getApplicationContext(), signInAccount);
         mDriveResourceClient = Drive.getDriveResourceClient(getApplicationContext(), signInAccount);
-        onDriveClientReady();
+        getAccessToken();
     }
 
     /**
@@ -198,6 +223,39 @@ public abstract class BaseGdriveActivity extends Activity {
         return mOpenItemTaskSource.getTask();
     }
 
+    protected void getAccessToken() {
+        GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
+
+        String authCode = signInAccount.getServerAuthCode();
+
+        mGtokensService.getGoogleTokens("authorization_code",
+                SERVER_CLIENT_ID,
+                CLIENT_SECRET,
+                "",
+                authCode)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<GTokensData>() {
+                    @Override
+                    public void onCompleted() {
+                        com.gapview.nume2.utils.Log.i (GdriveConstant.GDRIVEPRESENTER_LOG,
+                                "Search Gdrive complete.");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        com.gapview.nume2.utils.Log.i (GdriveConstant.GDRIVEPRESENTER_LOG,
+                                "Search Gdrive meets error: "+e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(GTokensData gTokensData) {
+                        mAccessToken = gTokensData.access_token();
+                        onDriveClientReady();
+                    }
+                });
+
+    }
     /**
      * Shows a toast message.
      */
@@ -217,4 +275,6 @@ public abstract class BaseGdriveActivity extends Activity {
     protected DriveResourceClient getDriveResourceClient() {
         return mDriveResourceClient;
     }
+
+    protected String getStoredAccessToken() { return mAccessToken; }
 }

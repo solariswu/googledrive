@@ -27,6 +27,8 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class RetrofitManager {
     private Retrofit mShroudedDataRetrofit;
     private Retrofit mYoutubeRetrofit;
+    private Retrofit mGdriveRetrofit;
+    private Retrofit mGoogleTokensRetrofit;
     private OkHttpClient httpClient;
     private static RetrofitManager uniqueInstance = new RetrofitManager();
 
@@ -87,5 +89,43 @@ public class RetrofitManager {
                     .build();
         }
         return mYoutubeRetrofit;
+    }
+
+    public Retrofit buildGdriveRetrofit(String SERVICE_API_BASE_URL) {
+        if (null == mGdriveRetrofit) {
+
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapterFactory(MyGsonTypeAdapterFactory.create())
+                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                    .create();
+
+            mGdriveRetrofit = new Retrofit.Builder()
+                    .baseUrl(SERVICE_API_BASE_URL)
+                    .client(httpClient)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .build();
+        }
+        return mGdriveRetrofit;
+    }
+
+    public Retrofit buildGoogleTokensRetrofit(String SERVICE_API_BASE_URL) {
+
+        if (null == mGoogleTokensRetrofit) {
+
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapterFactory(MyGsonTypeAdapterFactory.create())
+                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                    .create();
+
+            mGoogleTokensRetrofit = new Retrofit.Builder()
+                    .baseUrl(SERVICE_API_BASE_URL)
+                    .client(httpClient)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .build();
+        }
+
+        return mGoogleTokensRetrofit;
     }
 }
