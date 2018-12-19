@@ -66,16 +66,22 @@ public class MainActivity extends AppCompatActivity implements GdriveView {
         mGdrivePresenter = new GdrivePresenter();
         mGdrivePresenter.onCreate(this);
 
+        mButtonPick.setText(R.string.Next);
+        mButtonPick.setClickable(true);
+
         if (getIntent().getBooleanExtra(EXTRA_IS_FROM_DGRIVE, false)) {
             ArrayList<String> gdriveContent = getIntent().getStringArrayListExtra(EXTRA_GDRIVE_CONTENT);
             Integer contentCount = getIntent().getIntExtra(EXTRA_CONTENT_COUNT,0);
-            Toast.makeText(this, "Retrieved file content: " + gdriveContent,
-                    Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "Retrieved file content: " + gdriveContent,
+            //        Toast.LENGTH_LONG).show();
             if (0 < contentCount) {
                 mGdrivePresenter.postShroudedData(contentCount, gdriveContent);
+                mButtonPick.setText(R.string.Loading);
+                mButtonPick.setClickable(false);
             }
             else {
-                Toast.makeText(this, "No content!", Toast.LENGTH_LONG);
+                Toast.makeText(this, "No content!", Toast.LENGTH_LONG).show();
+
             }
         }
     }
@@ -106,14 +112,15 @@ public class MainActivity extends AppCompatActivity implements GdriveView {
         query_string += " " + WordCount.getHighestWord(tag);
 
         mGdrivePresenter.fetchYoutubeData(query_string);
-        Toast.makeText(this, "Got the server predict classification: " +
-                shroudedData.classification(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Got the server predict classification: " +
+        //        shroudedData.classification(), Toast.LENGTH_LONG).show();
+
+
     }
 
     @Override
     public void updateWithYoutubeData (YoutubeData youtubeData) {
-        //mTVGeoLocation.setText(youtubeData.items().get(0).id().videoId());
-        //todo: change to list
+
         if (null != youtubeData) {
             String videoId = youtubeData.items().get(0).id().videoId();
             String title1 = youtubeData.items().get(0).snippet().title();
@@ -124,8 +131,14 @@ public class MainActivity extends AppCompatActivity implements GdriveView {
                     videoId, videoId2, title1, title2));
 
         }
-        else Toast.makeText(this, "No valid Youtube Video search result found!",
-                Toast.LENGTH_LONG).show();
+        else {
+            Toast.makeText(this, "No valid Youtube Video search result found!",
+                    Toast.LENGTH_LONG).show();
+        }
+
+        mButtonPick.setText(R.string.Next);
+        mButtonPick.setClickable(true);
+
     }
 
     @OnClick({R.id.btn_pick})
