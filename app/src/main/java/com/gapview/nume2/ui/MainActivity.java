@@ -24,6 +24,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
+
 /**
  * Created by solariswu on September 5 2018.
  *
@@ -81,6 +82,12 @@ public class MainActivity extends AppCompatActivity implements GdriveView {
             }
             else {
                 Toast.makeText(this, "No content!", Toast.LENGTH_LONG).show();
+                String query_string = WordCount.getWords(null, null);
+                //query_string = WordCount.getHighestWord(classification);
+                //query_string += " " + WordCount.getHighestWord(tag);
+
+                mGdrivePresenter.fetchYoutubeData(query_string);
+
 
             }
         }
@@ -108,8 +115,9 @@ public class MainActivity extends AppCompatActivity implements GdriveView {
         String tag = shroudedData.tag_classfication().toString();
         tag = tag.substring(1, tag.length()-1);
 
-        query_string = WordCount.getHighestWord(classification);
-        query_string += " " + WordCount.getHighestWord(tag);
+        query_string = WordCount.getWords(classification, tag);
+        //query_string = WordCount.getHighestWord(classification);
+        //query_string += " " + WordCount.getHighestWord(tag);
 
         mGdrivePresenter.fetchYoutubeData(query_string);
         //Toast.makeText(this, "Got the server predict classification: " +
