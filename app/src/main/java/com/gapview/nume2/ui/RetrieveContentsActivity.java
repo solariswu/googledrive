@@ -56,14 +56,14 @@ public class RetrieveContentsActivity extends BaseGdriveActivity {
     protected void onDriveClientReady() {
         getDriveClient().requestSync()
                 .addOnSuccessListener(this,
-                        okay -> onRequesySyncReady())
+                        okay -> onRequestSyncReady())
                 .addOnFailureListener(this, e -> {
                     Log.e(TAG, "No folder selected", e);
                     ApiException apiException = (ApiException) e;
                     if (DriveStatusCodes.DRIVE_RATE_LIMIT_EXCEEDED == apiException.getStatusCode()) {
                         //Here I know Drive rate limit was exceeded.
                         Log.e(TAG, "Too many sync request to Drive", e);
-                        onRequesySyncReady();
+                        onRequestSyncReady();
                     }
                     else {
                         showMessage(getString(R.string.folder_not_selected));
@@ -82,7 +82,7 @@ public class RetrieveContentsActivity extends BaseGdriveActivity {
 //                });
     }
 
-    private void onRequesySyncReady () {
+    private void onRequestSyncReady () {
         pickFolder()
                 .addOnSuccessListener(this,
                         driveId -> queryFolder(driveId.asDriveFolder()))
@@ -109,6 +109,8 @@ public class RetrieveContentsActivity extends BaseGdriveActivity {
     }
 
     private void queryFolder (DriveFolder folder)  {
+        Log.d (TAG, "Folder Selected. Start to query the folder.");
+
 
 //        Filter parentFilter = Filters.in(SearchableField.PARENTS, parentDriverId);
         // [START drive_android_query_title]

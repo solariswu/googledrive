@@ -123,9 +123,11 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
         list.add(mVideoTitleB);
         list.add(mVideoIdB);
 
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList("YBList", list);
-        listFragment.setArguments(bundle);
+//        Bundle bundle = new Bundle();
+//        bundle.putStringArrayList("YBList", list);
+//        listFragment.setArguments(bundle);
+
+        listFragment.setterList(list);
 
         videoFragment =
                 (VideoFragment) getFragmentManager().findFragmentById(R.id.video_fragment_container);
@@ -237,15 +239,14 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
         private List<VideoEntry> VIDEO_LIST;
         private PageAdapter adapter;
         private View videoBox;
+        private ArrayList<String> stringList;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            Bundle bundle = getArguments();
-
-            if (bundle != null) {
-                ArrayList<String> stringList = bundle.getStringArrayList("YBList");
+            if (stringList != null) {
+                //ArrayList<String> stringList = bundle.getStringArrayList("YBList");
 
                 if (0 < stringList.size()) {
                     List<VideoEntry> list = new ArrayList<>();
@@ -269,8 +270,8 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
         public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
 
-            Bundle bundle = getArguments();
-            ArrayList<String> stringList= bundle.getStringArrayList("YBList");
+//            Bundle bundle = getArguments();
+//            ArrayList<String> stringList= bundle.getStringArrayList("YBList");
 
             if (0 < stringList.size()) {
                 List<VideoEntry> list = new ArrayList<>();
@@ -319,6 +320,10 @@ public final class YouTubeVideoListActivity extends Activity implements OnFullsc
             super.onDestroyView();
 
             adapter.releaseLoaders();
+        }
+
+        public void setterList (ArrayList<String> videoList) {
+            stringList = videoList;
         }
 
         public void setLabelVisibility(boolean visible) {
